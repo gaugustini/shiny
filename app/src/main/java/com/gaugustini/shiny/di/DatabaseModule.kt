@@ -28,7 +28,7 @@ object DatabaseModule {
         return Room.databaseBuilder(
             context.applicationContext, AppDatabase::class.java, "data.db"
         )
-            //.createFromAsset("data.db")
+            .createFromAsset("data.db")
             .fallbackToDestructiveMigration()
             .addTypeConverter(typeConverters)
             .build()
