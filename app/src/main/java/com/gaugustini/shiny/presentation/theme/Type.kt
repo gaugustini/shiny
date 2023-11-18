@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.ui.theme
+package com.gaugustini.shiny.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

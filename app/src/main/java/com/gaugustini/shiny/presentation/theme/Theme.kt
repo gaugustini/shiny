@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.ui.theme
+package com.gaugustini.shiny.presentation.theme
 
 import android.app.Activity
 import android.os.Build
