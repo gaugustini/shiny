@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.gaugustini.shiny.data.dao.ArmorDao
 import com.gaugustini.shiny.data.dao.DecorationDao
 import com.gaugustini.shiny.data.dao.LanguageDao
+import com.gaugustini.shiny.data.dao.ResultDao
 import com.gaugustini.shiny.data.dao.SkillDao
 import com.gaugustini.shiny.data.database.AppDatabase
 import com.gaugustini.shiny.data.mapper.Converters
@@ -62,6 +63,12 @@ object DatabaseModule {
     @Singleton
     fun provideLanguageDao(appDatabase: AppDatabase): LanguageDao {
         return appDatabase.languageDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideResultDao(appDatabase: AppDatabase): ResultDao {
+        return appDatabase.resultDao()
     }
 
 }

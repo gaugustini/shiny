@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="game_titles">
+        <item>@string/mhf1</item>
+        <item>@string/mhfu</item>
+        <item>@string/mhp3</item>
+        <item>@string/mh3u</item>
+        <item>@string/mh4</item>
+        <item>@string/mh4u</item>
+        <item>@string/mhgen</item>
+        <item>@string/mhgu</item>
+    </string-array>
+
+    <string-array name="data_languages_mhf1">
+        <item>@string/english</item>
+    </string-array>
+
+    <string-array name="data_languages_mhfu">
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+        <item>@string/french</item>
+        <item>@string/italian</item>
+        <item>@string/german</item>
+    </string-array>
+
+    <string-array name="data_languages_mhp3">
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+        <item>@string/french</item>
+        <item>@string/german</item>
+        <item>@string/japanese</item>
+    </string-array>
+
+    <string-array name="data_languages_mh3u">
+        <item>@string/english</item>
+        <item>@string/french</item>
+        <item>@string/german</item>
+        <item>@string/japanese</item>
+        <item>@string/chinese</item>
+    </string-array>
+
+    <string-array name="data_languages_mh4">
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+        <item>@string/japanese</item>
+        <item>@string/chinese</item>
+    </string-array>
+
+    <string-array name="data_languages_mh4u">
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+        <item>@string/french</item>
+        <item>@string/italian</item>
+        <item>@string/german</item>
+        <item>@string/japanese</item>
+    </string-array>
+
+    <string-array name="data_languages_mhgen">
+        <item>@string/english</item>
+        <item>@string/spanish</item>
+        <item>@string/french</item>
+        <item>@string/italian</item>
+        <item>@string/german</item>
+        <item>@string/japanese</item>
+    </string-array>
+
+    <string-array name="data_languages_mhgu">
+        <item>@string/english</item>
+        <item>@string/japanese</item>
+    </string-array>
+
+</resources>

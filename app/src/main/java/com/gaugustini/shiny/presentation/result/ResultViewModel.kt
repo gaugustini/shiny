@@ -4,12 +4,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.gaugustini.shiny.domain.model.Result
+import androidx.lifecycle.viewModelScope
+import com.gaugustini.shiny.domain.repository.ResultRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ResultViewModel @Inject constructor() : ViewModel() {
+class ResultViewModel @Inject constructor(
+    private val resultRepository: ResultRepository
+) : ViewModel() {
 
     var resultState by mutableStateOf(ResultState())
 
@@ -18,10 +22,13 @@ class ResultViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun loadResults() {
-        val result = Result("Head", "Body", "Arms", "Waist", "Legs",
-            mapOf("Decoration A" to 1, "Decoration B" to 2, "Decoration C" to 3))
-
-        resultState = resultState.copy(results = listOf(result, result, result, result))
+        viewModelScope.launch {
+            resultState =
+                resultState.copy(
+                    results = resultRepository.getResults(resultState.dataLanguage),
+                    isLoading = false
+                )
+        }
     }
 
 }

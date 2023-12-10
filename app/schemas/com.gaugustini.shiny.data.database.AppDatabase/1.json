@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "edb6b37f452a720fa2e0fb5e2f322e2f",
+    "identityHash": "50b38da3856c735ec8da295620db48fc",
     "entities": [
       {
         "tableName": "armor",
@@ -479,12 +479,182 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "result",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`result_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `head` INTEGER NOT NULL, `body` INTEGER NOT NULL, `arms` INTEGER NOT NULL, `waist` INTEGER NOT NULL, `legs` INTEGER NOT NULL, `decoration_one` INTEGER, `decoration_one_amount` INTEGER, `decoration_two` INTEGER, `decoration_two_amount` INTEGER, `decoration_three` INTEGER, `decoration_three_amount` INTEGER, `decoration_four` INTEGER, `decoration_four_amount` INTEGER, `decoration_five` INTEGER, `decoration_five_amount` INTEGER, `decoration_six` INTEGER, `decoration_six_amount` INTEGER, `decoration_seven` INTEGER, `decoration_seven_amount` INTEGER, `decoration_eight` INTEGER, `decoration_eight_amount` INTEGER, `decoration_nine` INTEGER, `decoration_nine_amount` INTEGER, `decoration_ten` INTEGER, `decoration_ten_amount` INTEGER)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "result_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "head",
+            "columnName": "head",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "body",
+            "columnName": "body",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "arms",
+            "columnName": "arms",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "waist",
+            "columnName": "waist",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "legs",
+            "columnName": "legs",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "decorationOne",
+            "columnName": "decoration_one",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationOneAmount",
+            "columnName": "decoration_one_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationTwo",
+            "columnName": "decoration_two",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationTwoAmount",
+            "columnName": "decoration_two_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationThree",
+            "columnName": "decoration_three",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationThreeAmount",
+            "columnName": "decoration_three_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationFour",
+            "columnName": "decoration_four",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationFourAmount",
+            "columnName": "decoration_four_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationFive",
+            "columnName": "decoration_five",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationFiveAmount",
+            "columnName": "decoration_five_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationSix",
+            "columnName": "decoration_six",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationSixAmount",
+            "columnName": "decoration_six_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationSeven",
+            "columnName": "decoration_seven",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationSevenAmount",
+            "columnName": "decoration_seven_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationEight",
+            "columnName": "decoration_eight",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationEightAmount",
+            "columnName": "decoration_eight_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationNine",
+            "columnName": "decoration_nine",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationNineAmount",
+            "columnName": "decoration_nine_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationTen",
+            "columnName": "decoration_ten",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "decorationTenAmount",
+            "columnName": "decoration_ten_amount",
+            "affinity": "INTEGER",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "result_id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'edb6b37f452a720fa2e0fb5e2f322e2f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '50b38da3856c735ec8da295620db48fc')"
     ]
   }
 }

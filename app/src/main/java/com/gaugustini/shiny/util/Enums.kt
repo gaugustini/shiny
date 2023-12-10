@@ -27,6 +27,31 @@ enum class Game(val value: Int) {
     }
 }
 
+enum class DataLanguage(val code: String) {
+    ENGLISH("en"),
+    SPANISH("es"),
+    FRENCH("fr"),
+    ITALIAN("it"),
+    GERMAN("de"),
+    JAPANESE("ja"),
+    CHINESE("zh");
+
+    companion object {
+        fun fromStringToDataLanguage(value: String): DataLanguage {
+            return when (value) {
+                "English" -> ENGLISH
+                "Spanish" -> SPANISH
+                "French" -> FRENCH
+                "Italian" -> ITALIAN
+                "German" -> GERMAN
+                "Japanese" -> JAPANESE
+                "Chinese" -> CHINESE
+                else -> ENGLISH
+            }
+        }
+    }
+}
+
 enum class HunterType(val value: Int) {
     BLADEMASTER(1),
     GUNNER(2);

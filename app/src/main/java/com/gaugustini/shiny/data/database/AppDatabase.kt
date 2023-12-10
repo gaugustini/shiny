@@ -6,15 +6,17 @@ import androidx.room.TypeConverters
 import com.gaugustini.shiny.data.dao.ArmorDao
 import com.gaugustini.shiny.data.dao.DecorationDao
 import com.gaugustini.shiny.data.dao.LanguageDao
+import com.gaugustini.shiny.data.dao.ResultDao
 import com.gaugustini.shiny.data.dao.SkillDao
 import com.gaugustini.shiny.data.entity.ArmorEntity
 import com.gaugustini.shiny.data.entity.DecorationEntity
 import com.gaugustini.shiny.data.entity.LanguageEntity
+import com.gaugustini.shiny.data.entity.ResultEntity
 import com.gaugustini.shiny.data.entity.SkillEntity
 import com.gaugustini.shiny.data.mapper.Converters
 
 @Database(
-    entities = [ArmorEntity::class, DecorationEntity::class, SkillEntity::class, LanguageEntity::class],
+    entities = [ArmorEntity::class, DecorationEntity::class, SkillEntity::class, LanguageEntity::class, ResultEntity::class],
     version = 1,
     exportSchema = true,
 )
@@ -28,5 +30,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun skillDao(): SkillDao
 
     abstract fun languageDao(): LanguageDao
+
+    abstract fun resultDao(): ResultDao
 
 }
