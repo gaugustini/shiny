@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -70,7 +71,7 @@ fun SearchScreenContent(
         HunterTypeChoice(state, onStateChanged)
         GenderChoice(state, onStateChanged)
         Button(onClick = onSearchClick) {
-            Text(text = "Search")
+            Text(text = stringResource(id = R.string.search))
         }
         SkillChoice(state, onStateChanged)
     }
@@ -101,7 +102,7 @@ fun GameChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
         Game.MHGU -> stringArrayResource(id = R.array.data_languages_mhgu)
     }
 
-    Text(text = "Game")
+    Text(text = stringResource(id = R.string.game))
     games.forEachIndexed { index, game ->
         Row {
             RadioButton(
@@ -119,7 +120,7 @@ fun GameChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
         }
     }
 
-    Text(text = "Language")
+    Text(text = stringResource(id = R.string.language))
     languages.forEach { language ->
         Row {
             RadioButton(
@@ -137,13 +138,13 @@ fun GameChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
 
 @Composable
 fun RankChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
-    Text(text = "Ranks")
+    Text(text = stringResource(id = R.string.ranks))
     TextField(
         value = state.villageRank,
         onValueChange = {
             onStateChanged(state.copy(villageRank = it))
         },
-        label = { Text(text = "Village Rank") },
+        label = { Text(text = stringResource(id = R.string.village_rank)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
@@ -153,7 +154,7 @@ fun RankChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
         onValueChange = {
             onStateChanged(state.copy(hunterRank = it))
         },
-        label = { Text(text = "Hunter Rank") },
+        label = { Text(text = stringResource(id = R.string.hunter_rank)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
@@ -163,13 +164,13 @@ fun RankChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
 
 @Composable
 fun SlotChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
-    Text(text = "Slots")
+    Text(text = stringResource(id = R.string.slots))
     TextField(
         value = state.weaponSlot,
         onValueChange = {
             onStateChanged(state.copy(weaponSlot = it))
         },
-        label = { Text(text = "Slots") },
+        label = { Text(text = stringResource(id = R.string.slots)) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Number
         ),
@@ -178,7 +179,7 @@ fun SlotChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
 
 @Composable
 fun HunterTypeChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
-    Text(text = "Hunter Type")
+    Text(text = stringResource(id = R.string.hunter_type))
     Row {
         RadioButton(
             selected = state.hunterType == HunterType.BLADEMASTER,
@@ -186,7 +187,7 @@ fun HunterTypeChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) 
                 onStateChanged(state.copy(hunterType = HunterType.BLADEMASTER))
             }
         )
-        Text(text = "Blademaster")
+        Text(text = stringResource(id = R.string.blademaster))
     }
     Row {
         RadioButton(
@@ -195,13 +196,13 @@ fun HunterTypeChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) 
                 onStateChanged(state.copy(hunterType = HunterType.GUNNER))
             }
         )
-        Text(text = "Gunner")
+        Text(text = stringResource(id = R.string.gunner))
     }
 }
 
 @Composable
 fun GenderChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
-    Text(text = "Gender")
+    Text(text = stringResource(id = R.string.gender))
     Row {
         RadioButton(
             selected = state.gender == Gender.MALE,
@@ -209,7 +210,7 @@ fun GenderChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
                 onStateChanged(state.copy(gender = Gender.MALE))
             }
         )
-        Text(text = "Male")
+        Text(text = stringResource(id = R.string.male))
     }
     Row {
         RadioButton(
@@ -218,7 +219,7 @@ fun GenderChoice(state: SearchState, onStateChanged: (SearchState) -> Unit) {
                 onStateChanged(state.copy(gender = Gender.FEMALE))
             }
         )
-        Text(text = "Female")
+        Text(text = stringResource(id = R.string.female))
     }
 }
 

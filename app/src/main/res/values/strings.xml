@@ -19,7 +19,7 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
 
-    <string name="type">Hunter Type</string>
+    <string name="hunter_type">Hunter Type</string>
     <string name="blademaster">Blademaster</string>
     <string name="gunner">Gunner</string>
 
@@ -38,7 +38,7 @@
     <string name="mhgen">Generations (Gen)</string>
     <string name="mhgu">Generations Ultimate (GU)</string>
 
-    <string name="data_language">Data Language</string>
+    <string name="language">Language</string>
     <string name="english">English</string>
     <string name="spanish">Spanish</string>
     <string name="french">French</string>
