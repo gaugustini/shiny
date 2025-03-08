@@ -1,26 +1,25 @@
 package com.gaugustini.shiny.presentation.search
 
-import com.gaugustini.shiny.domain.model.Skill
-import com.gaugustini.shiny.util.DataLanguage
-import com.gaugustini.shiny.util.Game
-import com.gaugustini.shiny.util.Gender
-import com.gaugustini.shiny.util.HunterType
-
 data class SearchState(
-    val game: Game = Game.MHFU,
-    val dataLanguage: DataLanguage = DataLanguage.ENGLISH,
-    val hunterRank: String = "9",
     val villageRank: String = "9",
+    val hunterRank: String = "9",
+    val gender: String = "Male",
     val weaponSlot: String = "0",
-    val gender: Gender = Gender.MALE,
-    val hunterType: HunterType = HunterType.BLADEMASTER,
-    val skills: List<Skill> = listOf(),
-    val querySkills: Set<Skill> = setOf(
-        Skill(id = 237, name = "Sharpness +1", familyID = 4172, points = 10),
-        Skill(id = 248, name = "Art of Unsheathing", familyID = 4178, points = 10),
-        Skill(id = 303, name = "Focus", familyID = 4209, points = 10),
-        Skill(id = 358, name = "Item Usage Improve", familyID = 4232, points = 10)
-    ),
+    val hunterType: String = "Blademaster",
+    val skills: List<String> = listOf("AAA", "ABC", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG", "HHH", "III", "JJJ", "BIC", "KKK", "CDA", "DIA", "JKL", "MMM", "NNN", "NAM", "DOA", "FIA"),
+    val selectedSkills: List<String> = listOf("AAA", "BBB", "CCC"),
+
+    val skillsSelectionIsOpen: Boolean = false,
+    val skillsSearchQuery: String = "",
+    val skillsFiltered: List<String> = skills,
+
+    val villageRankExpanded: Boolean = false,
+    val hunterRankExpanded: Boolean = false,
+    val genderExpanded: Boolean = false,
+    val weaponSlotExpanded: Boolean = false,
+    val selectedSkillsExpanded: Boolean = false,
+    val hunterTypeExpanded: Boolean = false,
+
     val isSearching: Boolean = false,
     val searchFinished: Boolean = false,
 )
