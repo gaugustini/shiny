@@ -26,7 +26,9 @@ fun ShinyApp() {
                 )
             }
             composable("result") {
-                ResultScreen()
+                ResultScreen(
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }

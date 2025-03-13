@@ -1,10 +1,7 @@
 package com.gaugustini.shiny.presentation.result
 
-import com.gaugustini.shiny.domain.model.Result
-import com.gaugustini.shiny.util.DataLanguage
+import com.gaugustini.shiny.domain.model.Solution
 
 data class ResultState(
-    val dataLanguage: DataLanguage = DataLanguage.ENGLISH,
-    val results: List<Result> = emptyList(),
-    val isLoading: Boolean = true,
+    val results: List<Solution> = emptyList(),
 )
