@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -51,33 +52,42 @@ fun SearchScreen(
 ) {
     val uiState by viewModel.searchState.collectAsState()
 
-    if (uiState.searchFinished) {
-        toResultScreen()
-    } else {
-        AnimatedContent(targetState = uiState.skillsSelectionIsOpen) { skillsSelectionIsOpen ->
-            if (skillsSelectionIsOpen) {
-                BackHandler {
-                    viewModel.updateState(
-                        uiState.copy(
-                            skillsSelectionIsOpen = false,
-                            skillsSearchQuery = "",
-                            skillsFiltered = uiState.skills,
-                            selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
+    when {
+        uiState.searchFinished -> {
+            toResultScreen()
+        }
+
+        uiState.isSearching -> {
+            LoadingContent()
+        }
+
+        else -> {
+            AnimatedContent(targetState = uiState.skillsSelectionIsOpen) { skillsSelectionIsOpen ->
+                if (skillsSelectionIsOpen) {
+                    BackHandler {
+                        viewModel.updateState(
+                            uiState.copy(
+                                skillsSelectionIsOpen = false,
+                                skillsSearchQuery = "",
+                                skillsFiltered = uiState.skills,
+                                selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
+                            )
                         )
+                    }
+                    SkillsSelectionContent(
+                        uiState,
+                        updateState = { viewModel.updateState(it) },
+                    )
+                } else {
+                    SearchScreenContent(
+                        uiState,
+                        updateState = { viewModel.updateState(it) },
+                        onSearchClick = {
+                            viewModel.updateState(uiState.copy(isSearching = true))
+                            viewModel.startSearch()
+                        }
                     )
                 }
-                SkillsSelectionContent(
-                    uiState,
-                    updateState = { viewModel.updateState(it) },
-                )
-            } else {
-                SearchScreenContent(
-                    uiState,
-                    updateState = { viewModel.updateState(it) },
-                    onSearchClick = {
-                        // Start Search
-                    }
-                )
             }
         }
     }
@@ -243,6 +253,16 @@ fun SkillsSelectionContent(
         ) {
             Text(text = "Done", fontSize = 18.sp)
         }
+    }
+}
+
+@Composable
+fun LoadingContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 
