@@ -1,42 +1,61 @@
 package com.gaugustini.shiny.presentation.search
 
+import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -62,18 +81,19 @@ fun SearchScreen(
         }
 
         else -> {
-            AnimatedContent(targetState = uiState.skillsSelectionIsOpen) { skillsSelectionIsOpen ->
-                if (skillsSelectionIsOpen) {
-                    BackHandler {
-                        viewModel.updateState(
-                            uiState.copy(
-                                skillsSelectionIsOpen = false,
-                                skillsSearchQuery = "",
-                                skillsFiltered = uiState.skills,
-                                selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
-                            )
-                        )
+            AnimatedContent(
+                targetState = uiState.skillsSelectionIsOpen,
+                transitionSpec = {
+                    if (targetState) {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) togetherWith
+                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Left)
+                    } else {
+                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Right) togetherWith
+                                slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
                     }
+                }
+            ) { skillsSelectionIsOpen ->
+                if (skillsSelectionIsOpen) {
                     SkillsSelectionContent(
                         uiState,
                         updateState = { viewModel.updateState(it) },
@@ -82,10 +102,7 @@ fun SearchScreen(
                     SearchScreenContent(
                         uiState,
                         updateState = { viewModel.updateState(it) },
-                        onSearchClick = {
-                            viewModel.updateState(uiState.copy(isSearching = true))
-                            viewModel.startSearch()
-                        }
+                        onSearchClick = { viewModel.startSearch() }
                     )
                 }
             }
@@ -93,165 +110,241 @@ fun SearchScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreenContent(
     uiState: SearchState,
     updateState: (SearchState) -> Unit = {},
     onSearchClick: () -> Unit = {}
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Text(text = "Shiny", fontSize = 24.sp)
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-        ExpandableCard(
-            title = "Village Stars",
-            selectedValue = uiState.villageRank,
-            expanded = uiState.villageRankExpanded,
-            options = (1..9).map { it.toString() },
-            onExpandChange = { updateState(uiState.copy(villageRankExpanded = it)) },
-            onValueChange = {
-                updateState(uiState.copy(villageRank = it, villageRankExpanded = false))
-            }
-        )
-
-        ExpandableCard(
-            title = "Hunter Rank",
-            selectedValue = uiState.hunterRank,
-            expanded = uiState.hunterRankExpanded,
-            options = (1..9).map { it.toString() },
-            onExpandChange = { updateState(uiState.copy(hunterRankExpanded = it)) },
-            onValueChange = {
-                updateState(uiState.copy(hunterRank = it, hunterRankExpanded = false))
-            }
-        )
-
-        ExpandableCard(
-            title = "Gender",
-            selectedValue = uiState.gender,
-            expanded = uiState.genderExpanded,
-            options = listOf("Male", "Female"),
-            onExpandChange = { updateState(uiState.copy(genderExpanded = it)) },
-            onValueChange = {
-                updateState(uiState.copy(gender = it, genderExpanded = false))
-            }
-        )
-
-        ExpandableCard(
-            title = "Weapon Slots",
-            selectedValue = uiState.weaponSlot,
-            expanded = uiState.weaponSlotExpanded,
-            options = (0..3).map { it.toString() },
-            onExpandChange = { updateState(uiState.copy(weaponSlotExpanded = it)) },
-            onValueChange = {
-                updateState(uiState.copy(weaponSlot = it, weaponSlotExpanded = false))
-            }
-        )
-
-        ExpandableCard(
-            title = "Hunter Type",
-            selectedValue = uiState.hunterType,
-            expanded = uiState.hunterTypeExpanded,
-            options = listOf("Blademaster", "Gunner"),
-            onExpandChange = { updateState(uiState.copy(hunterTypeExpanded = it)) },
-            onValueChange = {
-                updateState(uiState.copy(hunterType = it, hunterTypeExpanded = false))
-            }
-        )
-
-        ExpandableCard(
-            title = "Skills",
-            selectedValue = "",
-            expanded = uiState.selectedSkillsExpanded,
-            options = uiState.selectedSkills,
-            onExpandChange = { updateState(uiState.copy(skillsSelectionIsOpen = true)) },
-            onValueChange = { }
-        )
-
-        Button(
-            onClick = { onSearchClick() },
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "Shiny", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                },
+                scrollBehavior = scrollBehavior
+            )
+        }
+    ) { innerPadding ->
+        Column(
+            verticalArrangement = Arrangement.spacedBy(24.dp),
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(start = 32.dp, end = 32.dp)
+                .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "Search", fontSize = 18.sp)
+            ExpandableCard(
+                title = "Village Stars",
+                selectedValue = uiState.villageRank,
+                expanded = uiState.villageRankExpanded,
+                options = (1..9).map { it.toString() },
+                onExpandChange = { updateState(uiState.copy(villageRankExpanded = it)) },
+                onValueChange = {
+                    updateState(uiState.copy(villageRank = it, villageRankExpanded = false))
+                }
+            )
+
+            ExpandableCard(
+                title = "Hunter Rank",
+                selectedValue = uiState.hunterRank,
+                expanded = uiState.hunterRankExpanded,
+                options = (1..9).map { it.toString() },
+                onExpandChange = { updateState(uiState.copy(hunterRankExpanded = it)) },
+                onValueChange = {
+                    updateState(uiState.copy(hunterRank = it, hunterRankExpanded = false))
+                }
+            )
+
+            ExpandableCard(
+                title = "Gender",
+                selectedValue = uiState.gender,
+                expanded = uiState.genderExpanded,
+                options = listOf("Male", "Female"),
+                onExpandChange = { updateState(uiState.copy(genderExpanded = it)) },
+                onValueChange = {
+                    updateState(uiState.copy(gender = it, genderExpanded = false))
+                }
+            )
+
+            ExpandableCard(
+                title = "Weapon Slots",
+                selectedValue = uiState.weaponSlot,
+                expanded = uiState.weaponSlotExpanded,
+                options = (0..3).map { it.toString() },
+                onExpandChange = { updateState(uiState.copy(weaponSlotExpanded = it)) },
+                onValueChange = {
+                    updateState(uiState.copy(weaponSlot = it, weaponSlotExpanded = false))
+                }
+            )
+
+            ExpandableCard(
+                title = "Hunter Type",
+                selectedValue = uiState.hunterType,
+                expanded = uiState.hunterTypeExpanded,
+                options = listOf("Blademaster", "Gunner"),
+                onExpandChange = { updateState(uiState.copy(hunterTypeExpanded = it)) },
+                onValueChange = {
+                    updateState(uiState.copy(hunterType = it, hunterTypeExpanded = false))
+                }
+            )
+
+            SkillCard(
+                title = "Skills",
+                expanded = uiState.selectedSkillsExpanded,
+                items = uiState.selectedSkills,
+                onClick = { updateState(uiState.copy(skillsSelectionIsOpen = true)) }
+            )
+
+            Button(
+                onClick = { onSearchClick() },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 96.dp)
+            ) {
+                Text(
+                    text = "Search",
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SkillsSelectionContent(
     uiState: SearchState,
-    updateState: (SearchState) -> Unit = {},
+    updateState: (SearchState) -> Unit = {}
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
-        Text(text = "Select Skills...", fontSize = 24.sp)
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
+    val focusManager = LocalFocusManager.current
+    val clearStateSkillsSelection = uiState.copy(
+        skillsSelectionIsOpen = false,
+        skillsSearchQuery = "",
+        skillsFiltered = uiState.skills,
+        selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
+    )
 
-        TextField(
-            value = uiState.skillsSearchQuery,
-            onValueChange = { value ->
-                updateState(
-                    uiState.copy(
-                        skillsSearchQuery = value,
-                        skillsFiltered = uiState.skills.filter {
-                            it.lowercase().contains(value.lowercase())
-                        }
-                    )
+    BackHandler { updateState(clearStateSkillsSelection) }
+
+    Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(text = "Select Skills...", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                },
+                navigationIcon = {
+                    IconButton(
+                        onClick = { updateState(clearStateSkillsSelection) }
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "Back"
+                        )
+                    }
+                },
+                scrollBehavior = scrollBehavior
+            )
+        },
+        floatingActionButton = {
+            Button(
+                onClick = { updateState(clearStateSkillsSelection) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 40.dp, end = 40.dp)
+            ) {
+                Text(
+                    text = "Done",
+                    fontSize = 18.sp
                 )
-            },
-            placeholder = { Text("Search...") },
-            leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        LazyColumn(modifier = Modifier.weight(1f)) {
-            itemsIndexed(uiState.skillsFiltered) { _, skill ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .fillMaxWidth()
-                ) {
-                    Checkbox(
-                        checked = uiState.selectedSkills.contains(skill),
-                        onCheckedChange = { checked ->
-                            if (checked) {
-                                updateState(uiState.copy(selectedSkills = uiState.selectedSkills + skill))
-                            } else {
-                                updateState(uiState.copy(selectedSkills = uiState.selectedSkills - skill))
+            }
+        },
+        floatingActionButtonPosition = FabPosition.Center
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+        ) {
+            OutlinedTextField(
+                placeholder = { Text("Search...") },
+                value = uiState.skillsSearchQuery,
+                onValueChange = { value ->
+                    updateState(
+                        uiState.copy(
+                            skillsSearchQuery = value,
+                            skillsFiltered = uiState.skills.filter {
+                                it.lowercase().contains(value.lowercase())
                             }
-                        }
+                        )
                     )
-                    Text(text = skill, textAlign = TextAlign.Center)
+                },
+                singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(
+                    onSearch = { focusManager.clearFocus() }
+                ),
+                shape = RoundedCornerShape(16.dp),
+                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                trailingIcon = {
+                    if (uiState.skillsSearchQuery.isNotEmpty()) {
+                        IconButton(onClick = {
+                            updateState(
+                                uiState.copy(
+                                    skillsSearchQuery = "",
+                                    skillsFiltered = uiState.skills
+                                )
+                            )
+                            focusManager.clearFocus()
+                        }) {
+                            Icon(Icons.Filled.Clear, contentDescription = "Clear text")
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(start = 48.dp, end = 48.dp, bottom = 96.dp),
+                modifier = Modifier.weight(1f)
+            ) {
+                items(uiState.skillsFiltered) { skill ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .clickable {
+                                val isSelected = uiState.selectedSkills.contains(skill)
+                                val updatedList = if (isSelected) {
+                                    uiState.selectedSkills - skill
+                                } else {
+                                    uiState.selectedSkills + skill
+                                }
+                                updateState(uiState.copy(selectedSkills = updatedList))
+                            }
+                            .fillMaxWidth()
+                    ) {
+                        Checkbox(
+                            checked = uiState.selectedSkills.contains(skill),
+                            onCheckedChange = null,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                        Text(
+                            text = skill,
+                            fontSize = 18.sp
+                        )
+                    }
                 }
             }
-        }
-
-        Button(
-            onClick = {
-                updateState(
-                    uiState.copy(
-                        skillsSelectionIsOpen = false,
-                        skillsSearchQuery = "",
-                        skillsFiltered = uiState.skills,
-                        selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
-                    )
-                )
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-        ) {
-            Text(text = "Done", fontSize = 18.sp)
         }
     }
 }
@@ -273,45 +366,135 @@ fun ExpandableCard(
     expanded: Boolean,
     options: List<String>,
     onExpandChange: (Boolean) -> Unit,
-    onValueChange: (String) -> Unit,
+    onValueChange: (String) -> Unit
 ) {
     Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize(),
+            .animateContentSize()
     ) {
         Column {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
+                    .clickable { onExpandChange(!expanded) }
                     .fillMaxWidth()
                     .padding(16.dp)
-                    .clickable { onExpandChange(!expanded) }
             ) {
-                Text(text = title, fontWeight = FontWeight.Bold)
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
                 Row {
-                    Text(text = selectedValue, modifier = Modifier.padding(end = 8.dp))
+                    Text(
+                        text = selectedValue,
+                        fontSize = 16.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.padding(end = 12.dp)
+                    )
                     Icon(
-                        imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                        imageVector = if (expanded) {
+                            Icons.Default.KeyboardArrowUp
+                        } else {
+                            Icons.Default.KeyboardArrowDown
+                        },
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
                         contentDescription = null
                     )
                 }
             }
 
             if (expanded) {
-                Column(modifier = Modifier.background(Color(0xFFF2E6FF))) {
+                Column {
                     options.forEach { option ->
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
+                                .clickable { onValueChange(option) }
                                 .background(
-                                    if (option == selectedValue) Color(0xFFD1B3FF) else Color.Transparent
+                                    if (option == selectedValue) {
+                                        MaterialTheme.colorScheme.primary
+                                    } else {
+                                        MaterialTheme.colorScheme.surfaceContainer
+                                    }
                                 )
                                 .fillMaxWidth()
                                 .padding(12.dp)
-                                .clickable { onValueChange(option) }
                         ) {
-                            Text(text = option, textAlign = TextAlign.Center)
+                            Text(
+                                text = option,
+                                fontSize = 18.sp,
+                                color = if (option == selectedValue) {
+                                    MaterialTheme.colorScheme.onPrimary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurface
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SkillCard(
+    title: String,
+    expanded: Boolean,
+    items: List<String>,
+    onClick: () -> Unit
+) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ),
+        modifier = Modifier
+            .fillMaxWidth()
+            .animateContentSize()
+    ) {
+        Column {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .clickable { onClick() }
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    contentDescription = null
+                )
+
+            }
+
+            if (expanded) {
+                Column {
+                    items.forEach { item ->
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .background(MaterialTheme.colorScheme.surfaceContainer)
+                                .fillMaxWidth()
+                                .padding(12.dp)
+                        ) {
+                            Text(
+                                text = item,
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
                         }
                     }
                 }
@@ -321,9 +504,9 @@ fun ExpandableCard(
 }
 
 @Preview(name = "Light Mode")
-//@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun SearchScreenPreview(
+private fun SearchScreenContentPreview(
     @PreviewParameter(SearchScreenPreviewParamProvider::class) state: SearchState
 ) {
     ShinyTheme {
@@ -332,7 +515,22 @@ private fun SearchScreenPreview(
             color = MaterialTheme.colorScheme.background
         ) {
             SearchScreenContent(state)
-            //SkillsSelectionContent(state)
+        }
+    }
+}
+
+@Preview(name = "Light Mode")
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun SkillsSelectionContentPreview(
+    @PreviewParameter(SearchScreenPreviewParamProvider::class) state: SearchState
+) {
+    ShinyTheme {
+        Surface(
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            SkillsSelectionContent(state)
         }
     }
 }

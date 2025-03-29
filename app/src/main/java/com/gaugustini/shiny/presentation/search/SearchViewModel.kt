@@ -26,16 +26,12 @@ class SearchViewModel @Inject constructor() : ViewModel() {
     }
 
     fun startSearch() {
+        _searchState.value = _searchState.value.copy(isSearching = true)
         viewModelScope.launch(Dispatchers.Default) {
             delay(3000) // Simulate search
-            _searchState.value = _searchState.value.copy(
-                isSearching = false,
-                searchFinished = true
-            )
+            _searchState.value = _searchState.value.copy(isSearching = false, searchFinished = true)
             delay(1000) // Need to find a better way to change state after going to Result Screen
-            _searchState.value = _searchState.value.copy(
-                searchFinished = false
-            )
+            _searchState.value = _searchState.value.copy(searchFinished = false)
         }
     }
 
