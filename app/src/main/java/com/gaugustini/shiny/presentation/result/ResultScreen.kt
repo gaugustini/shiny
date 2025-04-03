@@ -1,7 +1,9 @@
 package com.gaugustini.shiny.presentation.result
 
+import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,8 +17,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -25,12 +27,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
@@ -58,35 +64,48 @@ fun ResultScreen(
 fun ResultScreenContent(
     uiState: ResultState,
     onBackClick: () -> Unit = {},
-    onSortClick: () -> Unit = {}
 ) {
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
-                title = { Text(text = "Results") },
+                title = {
+                    Text(text = "Results", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            tint = MaterialTheme.colorScheme.onBackground,
+                            contentDescription = "Back"
+                        )
                     }
                 },
-                actions = {
-                    IconButton(onClick = onSortClick) {
-                        Icon(Icons.Default.Menu, contentDescription = "Sort")
-                    }
-                }
+                scrollBehavior = scrollBehavior
             )
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .padding(24.dp)
+                .padding(innerPadding)
         ) {
-            Text(text = "Found ${uiState.results.size} solutions", fontSize = 16.sp)
+            Text(
+                text = "Found ${uiState.results.size} solutions",
+                fontSize = 16.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 32.dp, vertical = 16.dp)
+            )
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(start = 32.dp, end = 32.dp, bottom = 96.dp),
+                modifier = Modifier.weight(1f)
+            ) {
                 items(uiState.results) {
                     SolutionCard(it)
                 }
@@ -97,8 +116,19 @@ fun ResultScreenContent(
 
 @Composable
 fun SolutionCard(solution: Solution) {
-    Card(modifier = Modifier.fillMaxWidth()) {
-        Column(modifier = Modifier.padding(16.dp)) {
+    Card(
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+        elevation = CardDefaults.elevatedCardElevation(),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(32.dp)
+        ) {
             SolutionItem(icon = Icons.Default.AccountBox, text = solution.head)
             SolutionItem(icon = Icons.Default.AccountBox, text = solution.body)
             SolutionItem(icon = Icons.Default.AccountBox, text = solution.arms)
@@ -114,15 +144,23 @@ fun SolutionCard(solution: Solution) {
 
 @Composable
 fun SolutionItem(icon: ImageVector, text: String) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        horizontalArrangement = Arrangement.Start,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.fillMaxSize()
+    ) {
         Icon(imageVector = icon, contentDescription = null)
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(text = text, fontSize = 16.sp)
+        Spacer(modifier = Modifier.width(18.dp))
+        Text(
+            text = text,
+            fontSize = 18.sp,
+            color = MaterialTheme.colorScheme.onSecondaryContainer
+        )
     }
 }
 
 @Preview(name = "Light Mode")
-//@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun ResultScreenPreview(
     @PreviewParameter(ResultScreenPreviewParamProvider::class) state: ResultState
