@@ -36,6 +36,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -43,6 +45,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gaugustini.shiny.R
 import com.gaugustini.shiny.domain.model.Solution
 import com.gaugustini.shiny.presentation.theme.ShinyTheme
 
@@ -72,14 +75,18 @@ fun ResultScreenContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Results", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = stringResource(R.string.results),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -93,7 +100,15 @@ fun ResultScreenContent(
                 .padding(innerPadding)
         ) {
             Text(
-                text = "Found ${uiState.results.size} solutions",
+                text = if (uiState.results.isEmpty()) {
+                    stringResource(R.string.no_solution)
+                } else {
+                    pluralStringResource(
+                        R.plurals.found_solutions,
+                        uiState.results.size,
+                        uiState.results.size
+                    )
+                },
                 fontSize = 16.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier

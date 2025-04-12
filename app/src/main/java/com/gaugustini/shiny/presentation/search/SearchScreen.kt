@@ -53,6 +53,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -62,6 +63,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gaugustini.shiny.R
 import com.gaugustini.shiny.presentation.theme.ShinyTheme
 
 @Composable
@@ -124,7 +126,11 @@ fun SearchScreenContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Shiny", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = stringResource(R.string.app_name),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -139,7 +145,7 @@ fun SearchScreenContent(
                 .verticalScroll(rememberScrollState())
         ) {
             ExpandableCard(
-                title = "Village Stars",
+                title = stringResource(R.string.village_stars),
                 selectedValue = uiState.villageRank,
                 expanded = uiState.villageRankExpanded,
                 options = (1..9).map { it.toString() },
@@ -150,7 +156,7 @@ fun SearchScreenContent(
             )
 
             ExpandableCard(
-                title = "Hunter Rank",
+                title = stringResource(R.string.hunter_rank),
                 selectedValue = uiState.hunterRank,
                 expanded = uiState.hunterRankExpanded,
                 options = (1..9).map { it.toString() },
@@ -161,10 +167,10 @@ fun SearchScreenContent(
             )
 
             ExpandableCard(
-                title = "Gender",
+                title = stringResource(R.string.gender),
                 selectedValue = uiState.gender,
                 expanded = uiState.genderExpanded,
-                options = listOf("Male", "Female"),
+                options = listOf(stringResource(R.string.male), stringResource(R.string.female)),
                 onExpandChange = { updateState(uiState.copy(genderExpanded = it)) },
                 onValueChange = {
                     updateState(uiState.copy(gender = it, genderExpanded = false))
@@ -172,7 +178,7 @@ fun SearchScreenContent(
             )
 
             ExpandableCard(
-                title = "Weapon Slots",
+                title = stringResource(R.string.weapon_slots),
                 selectedValue = uiState.weaponSlot,
                 expanded = uiState.weaponSlotExpanded,
                 options = (0..3).map { it.toString() },
@@ -183,10 +189,13 @@ fun SearchScreenContent(
             )
 
             ExpandableCard(
-                title = "Hunter Type",
+                title = stringResource(R.string.hunter_type),
                 selectedValue = uiState.hunterType,
                 expanded = uiState.hunterTypeExpanded,
-                options = listOf("Blademaster", "Gunner"),
+                options = listOf(
+                    stringResource(R.string.blademaster),
+                    stringResource(R.string.gunner)
+                ),
                 onExpandChange = { updateState(uiState.copy(hunterTypeExpanded = it)) },
                 onValueChange = {
                     updateState(uiState.copy(hunterType = it, hunterTypeExpanded = false))
@@ -194,7 +203,7 @@ fun SearchScreenContent(
             )
 
             SkillCard(
-                title = "Skills",
+                title = stringResource(R.string.skills),
                 expanded = uiState.selectedSkillsExpanded,
                 items = uiState.selectedSkills,
                 onClick = { updateState(uiState.copy(skillsSelectionIsOpen = true)) }
@@ -207,7 +216,7 @@ fun SearchScreenContent(
                     .padding(bottom = 96.dp)
             ) {
                 Text(
-                    text = "Search",
+                    text = stringResource(R.string.search),
                     fontSize = 18.sp
                 )
             }
@@ -237,7 +246,11 @@ fun SkillsSelectionContent(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Select Skills...", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = stringResource(R.string.select_skills),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
                 navigationIcon = {
                     IconButton(
@@ -246,7 +259,7 @@ fun SkillsSelectionContent(
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
                             tint = MaterialTheme.colorScheme.onBackground,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back)
                         )
                     }
                 },
@@ -261,7 +274,7 @@ fun SkillsSelectionContent(
                     .padding(start = 40.dp, end = 40.dp)
             ) {
                 Text(
-                    text = "Done",
+                    text = stringResource(R.string.done),
                     fontSize = 18.sp
                 )
             }
@@ -274,7 +287,7 @@ fun SkillsSelectionContent(
                 .padding(innerPadding)
         ) {
             OutlinedTextField(
-                placeholder = { Text("Search...") },
+                placeholder = { Text(stringResource(R.string.search)) },
                 value = uiState.skillsSearchQuery,
                 onValueChange = { value ->
                     updateState(
@@ -304,7 +317,10 @@ fun SkillsSelectionContent(
                             )
                             focusManager.clearFocus()
                         }) {
-                            Icon(Icons.Filled.Clear, contentDescription = "Clear text")
+                            Icon(
+                                Icons.Filled.Clear,
+                                contentDescription = stringResource(R.string.clear_text)
+                            )
                         }
                     }
                 },
