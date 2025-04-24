@@ -386,7 +386,7 @@ fun ExpandableCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -404,13 +404,13 @@ fun ExpandableCard(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Row {
                     Text(
                         text = selectedValue,
                         fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
                         modifier = Modifier.padding(end = 12.dp)
                     )
                     Icon(
@@ -419,7 +419,7 @@ fun ExpandableCard(
                         } else {
                             Icons.Default.KeyboardArrowDown
                         },
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        tint = MaterialTheme.colorScheme.onSecondaryContainer,
                         contentDescription = null
                     )
                 }
@@ -468,7 +468,7 @@ fun SkillCard(
 ) {
     Card(
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         modifier = Modifier
             .fillMaxWidth()
@@ -486,11 +486,11 @@ fun SkillCard(
                     text = title,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                    tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                    tint = MaterialTheme.colorScheme.onSecondaryContainer,
                     contentDescription = null
                 )
 
