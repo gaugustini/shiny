@@ -1,6 +1,7 @@
 package com.gaugustini.shiny.presentation.result
 
 import android.content.res.Configuration
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -10,13 +11,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,14 +28,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -144,27 +143,31 @@ fun SolutionCard(solution: Solution) {
                 .fillMaxSize()
                 .padding(32.dp)
         ) {
-            SolutionItem(icon = Icons.Default.AccountBox, text = solution.head)
-            SolutionItem(icon = Icons.Default.AccountBox, text = solution.body)
-            SolutionItem(icon = Icons.Default.AccountBox, text = solution.arms)
-            SolutionItem(icon = Icons.Default.AccountBox, text = solution.waist)
-            SolutionItem(icon = Icons.Default.AccountBox, text = solution.legs)
+            SolutionItem(icon = R.drawable.icon_armor_head, text = solution.head)
+            SolutionItem(icon = R.drawable.icon_armor_body, text = solution.body)
+            SolutionItem(icon = R.drawable.icon_armor_arms, text = solution.arms)
+            SolutionItem(icon = R.drawable.icon_armor_waist, text = solution.waist)
+            SolutionItem(icon = R.drawable.icon_armor_legs, text = solution.legs)
             Spacer(modifier = Modifier.height(16.dp))
             solution.decorations.forEach { (decoration, amount) ->
-                SolutionItem(icon = Icons.Default.FavoriteBorder, text = "$decoration x $amount")
+                SolutionItem(icon = R.drawable.icon_jewel, text = "$decoration x $amount")
             }
         }
     }
 }
 
 @Composable
-fun SolutionItem(icon: ImageVector, text: String) {
+fun SolutionItem(icon: Int, text: String) {
     Row(
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxSize()
     ) {
-        Icon(imageVector = icon, contentDescription = null)
+        Image(
+            painter = painterResource(icon),
+            contentDescription = null,
+            modifier = Modifier.size(28.dp)
+        )
         Spacer(modifier = Modifier.width(18.dp))
         Text(
             text = text,
