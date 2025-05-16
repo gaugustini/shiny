@@ -1,13 +1,13 @@
 package com.gaugustini.shiny.di
 
-import com.gaugustini.shiny.data.repository.ArmorRepositoryImpl
-import com.gaugustini.shiny.data.repository.DecorationRepositoryImpl
-import com.gaugustini.shiny.data.repository.ResultRepositoryImpl
-import com.gaugustini.shiny.data.repository.SkillRepositoryImpl
-import com.gaugustini.shiny.domain.repository.ArmorRepository
-import com.gaugustini.shiny.domain.repository.DecorationRepository
-import com.gaugustini.shiny.domain.repository.ResultRepository
-import com.gaugustini.shiny.domain.repository.SkillRepository
+import com.gaugustini.shiny.repository.ArmorRepository
+import com.gaugustini.shiny.repository.ArmorRepositoryImpl
+import com.gaugustini.shiny.repository.DecorationRepository
+import com.gaugustini.shiny.repository.DecorationRepositoryImpl
+import com.gaugustini.shiny.repository.ResultRepository
+import com.gaugustini.shiny.repository.ResultRepositoryImpl
+import com.gaugustini.shiny.repository.SkillRepository
+import com.gaugustini.shiny.repository.SkillRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

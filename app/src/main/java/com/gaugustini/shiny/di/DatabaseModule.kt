@@ -2,13 +2,13 @@ package com.gaugustini.shiny.di
 
 import android.content.Context
 import androidx.room.Room
-import com.gaugustini.shiny.data.dao.ArmorDao
-import com.gaugustini.shiny.data.dao.DecorationDao
-import com.gaugustini.shiny.data.dao.LanguageDao
-import com.gaugustini.shiny.data.dao.ResultDao
-import com.gaugustini.shiny.data.dao.SkillDao
-import com.gaugustini.shiny.data.database.AppDatabase
-import com.gaugustini.shiny.data.mapper.Converters
+import com.gaugustini.shiny.database.AppDatabase
+import com.gaugustini.shiny.database.dao.ArmorDao
+import com.gaugustini.shiny.database.dao.DecorationDao
+import com.gaugustini.shiny.database.dao.LanguageDao
+import com.gaugustini.shiny.database.dao.ResultDao
+import com.gaugustini.shiny.database.dao.SkillDao
+import com.gaugustini.shiny.util.Converters
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
