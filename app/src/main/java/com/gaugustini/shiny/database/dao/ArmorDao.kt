@@ -11,25 +11,19 @@ interface ArmorDao {
         """
         SELECT * FROM armor WHERE
         game = :game AND
-        category = :armorCategory AND
-        (hr <= :hunterRank OR village <= :villageRank) AND
+        armor_type = :armorType AND
+        (hunter_rank <= :hunterRank OR village_stars <= :villageStars) AND
         gender IN (0, :gender) AND
-        type IN (0, :hunterType) AND
-        (skill_one IN (:skills) AND skill_one_points > 0 OR
-        skill_two IN (:skills) AND skill_two_points > 0 OR
-        skill_three IN (:skills) AND skill_three_points > 0 OR
-        skill_four IN (:skills) AND skill_four_points > 0 OR
-        skill_five IN (:skills) AND skill_five_points > 0)
+        hunter_type IN (0, :hunterType)
         """
     )
     suspend fun getRelevantArmorList(
         game: Int,
-        armorCategory: Int,
+        armorType: Int,
         hunterRank: Int,
-        villageRank: Int,
+        villageStars: Int,
         gender: Int,
         hunterType: Int,
-        skills: List<Int>,
     ): List<ArmorEntity>
 
 }

@@ -11,15 +11,13 @@ interface DecorationDao {
         """
         SELECT * FROM decoration WHERE
         game = :game AND
-        (hr <= :hunterRank OR village <= :villageRank) AND
-        skill_one IN (:skill)
+        (hunter_rank <= :hunterRank OR village_stars <= :villageStars)
         """
     )
     suspend fun getRelevantDecorationList(
         game: Int,
         hunterRank: Int,
-        villageRank: Int,
-        skill: List<Int>,
+        villageStars: Int,
     ): List<DecorationEntity>
 
 }

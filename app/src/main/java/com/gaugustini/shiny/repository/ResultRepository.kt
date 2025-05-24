@@ -1,13 +1,15 @@
 package com.gaugustini.shiny.repository
 
 import com.gaugustini.shiny.data.ArmorSet
-import com.gaugustini.shiny.data.Result
-import com.gaugustini.shiny.util.DataLanguage
+import com.gaugustini.shiny.database.dao.ResultDao
+import javax.inject.Inject
+import javax.inject.Singleton
 
-interface ResultRepository {
+@Singleton
+class ResultRepository @Inject constructor(private val resultDao: ResultDao) {
 
-    suspend fun insertNewResults(results: List<ArmorSet>)
-
-    suspend fun getResults(dataLanguage: DataLanguage): List<Result>
+    suspend fun insertNewResults(results: List<ArmorSet>) {
+        resultDao.clearResults()
+    }
 
 }
