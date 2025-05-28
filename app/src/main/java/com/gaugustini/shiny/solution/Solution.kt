@@ -7,7 +7,6 @@ import com.gaugustini.shiny.data.Query
 import com.gaugustini.shiny.repository.ArmorRepository
 import com.gaugustini.shiny.repository.DecorationRepository
 import com.gaugustini.shiny.repository.ResultRepository
-import com.gaugustini.shiny.util.ArmorCategory
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -38,11 +37,11 @@ class Solution @Inject constructor(
     }
 
     private suspend fun getData() {
-        headList = armorRepository.getRelevantArmorList(ArmorCategory.HEAD, query)
-        bodyList = armorRepository.getRelevantArmorList(ArmorCategory.BODY, query)
-        armsList = armorRepository.getRelevantArmorList(ArmorCategory.ARMS, query)
-        waistList = armorRepository.getRelevantArmorList(ArmorCategory.WAIST, query)
-        legsList = armorRepository.getRelevantArmorList(ArmorCategory.LEGS, query)
+        headList = armorRepository.getRelevantArmorList(0, query)
+        bodyList = armorRepository.getRelevantArmorList(1, query)
+        armsList = armorRepository.getRelevantArmorList(2, query)
+        waistList = armorRepository.getRelevantArmorList(3, query)
+        legsList = armorRepository.getRelevantArmorList(4, query)
         decorationList = decorationRepository.getRelevantDecorationList(query)
     }
 
