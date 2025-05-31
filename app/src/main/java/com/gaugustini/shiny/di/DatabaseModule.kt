@@ -2,11 +2,11 @@ package com.gaugustini.shiny.di
 
 import android.content.Context
 import androidx.room.Room
-import com.gaugustini.shiny.database.AppDatabase
-import com.gaugustini.shiny.database.dao.ArmorDao
-import com.gaugustini.shiny.database.dao.DecorationDao
-import com.gaugustini.shiny.database.dao.ResultDao
-import com.gaugustini.shiny.database.dao.SkillDao
+import com.gaugustini.shiny.data.database.AppDatabase
+import com.gaugustini.shiny.data.database.dao.ArmorDao
+import com.gaugustini.shiny.data.database.dao.DecorationDao
+import com.gaugustini.shiny.data.database.dao.ResultDao
+import com.gaugustini.shiny.data.database.dao.SkillDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -27,7 +27,7 @@ object DatabaseModule {
             context.applicationContext, AppDatabase::class.java, "data.db"
         )
             .createFromAsset("data.db")
-            .fallbackToDestructiveMigration()
+            .fallbackToDestructiveMigration(true)
             .build()
     }
 
