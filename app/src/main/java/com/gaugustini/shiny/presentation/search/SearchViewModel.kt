@@ -34,7 +34,7 @@ class SearchViewModel @Inject constructor(
             val skills = withContext(Dispatchers.IO) {
                 skillRepository.getSkillList(hunterType)
             }
-            _searchState.update { it.copy(skills = skills) }
+            _searchState.update { it.copy(skills = skills, skillsFiltered = skills) }
         }
     }
 
@@ -54,7 +54,11 @@ class SearchViewModel @Inject constructor(
             weaponSlot = _searchState.value.weaponSlot.toInt(),
             gender = if (_searchState.value.gender == "Male") 1 else 2,
             hunterType = if (_searchState.value.hunterType == "Blademaster") 1 else 2,
-            skills = _searchState.value.selectedSkills
+            skills = if (_searchState.value.hunterType == "Blademaster") {
+                _searchState.value.selectedSkillsBlade
+            } else {
+                _searchState.value.selectedSkillsGunner
+            }
         )
         viewModelScope.launch {
             _searchState.value = _searchState.value.copy(isSearching = true)

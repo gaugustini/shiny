@@ -205,7 +205,11 @@ fun SearchScreenContent(
             SkillCard(
                 title = stringResource(R.string.skills),
                 expanded = uiState.selectedSkillsExpanded,
-                items = uiState.selectedSkills.map { it.name },
+                items = if (uiState.hunterType == "Blademaster") {
+                    uiState.selectedSkillsBlade.map { it.name }
+                } else {
+                    uiState.selectedSkillsGunner.map { it.name }
+                },
                 onClick = { updateState(uiState.copy(skillsSelectionIsOpen = true)) }
             )
 
@@ -236,7 +240,11 @@ fun SkillsSelectionContent(
         skillsSelectionIsOpen = false,
         skillsSearchQuery = "",
         skillsFiltered = uiState.skills,
-        selectedSkillsExpanded = uiState.selectedSkills.isNotEmpty()
+        selectedSkillsExpanded = if (uiState.hunterType == "Blademaster") {
+            uiState.selectedSkillsBlade.isNotEmpty()
+        } else {
+            uiState.selectedSkillsGunner.isNotEmpty()
+        }
     )
 
     BackHandler { updateState(clearStateSkillsSelection) }
@@ -339,18 +347,38 @@ fun SkillsSelectionContent(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .clickable {
-                                val isSelected = uiState.selectedSkills.contains(skill)
-                                val updatedList = if (isSelected) {
-                                    uiState.selectedSkills - skill
+                                val isSelected = if (uiState.hunterType == "Blademaster") {
+                                    uiState.selectedSkillsBlade.contains(skill)
                                 } else {
-                                    uiState.selectedSkills + skill
+                                    uiState.selectedSkillsGunner.contains(skill)
                                 }
-                                updateState(uiState.copy(selectedSkills = updatedList))
+                                val updatedList = if (isSelected) {
+                                    if (uiState.hunterType == "Blademaster") {
+                                        uiState.selectedSkillsBlade - skill
+                                    } else {
+                                        uiState.selectedSkillsGunner - skill
+                                    }
+                                } else {
+                                    if (uiState.hunterType == "Blademaster") {
+                                        uiState.selectedSkillsBlade + skill
+                                    } else {
+                                        uiState.selectedSkillsGunner + skill
+                                    }
+                                }
+                                if (uiState.hunterType == "Blademaster") {
+                                    updateState(uiState.copy(selectedSkillsBlade = updatedList))
+                                } else {
+                                    updateState(uiState.copy(selectedSkillsGunner = updatedList))
+                                }
                             }
                             .fillMaxWidth()
                     ) {
                         Checkbox(
-                            checked = uiState.selectedSkills.contains(skill),
+                            checked = if (uiState.hunterType == "Blademaster") {
+                                uiState.selectedSkillsBlade.contains(skill)
+                            } else {
+                                uiState.selectedSkillsGunner.contains(skill)
+                            },
                             onCheckedChange = null,
                             modifier = Modifier.padding(16.dp)
                         )

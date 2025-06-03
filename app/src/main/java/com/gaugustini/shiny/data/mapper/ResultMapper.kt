@@ -24,7 +24,7 @@ object ResultMapper {
                 head = result.head.nameEn,
                 body = result.body.nameEn,
                 arms = result.arms.nameEn,
-                waist = result.arms.nameEn,
+                waist = result.waist.nameEn,
                 legs = result.legs.nameEn,
                 decorations = decorationAndQuantityMap
             )

@@ -9,7 +9,8 @@ data class SearchState(
     val weaponSlot: String = "0",
     val hunterType: String = "Blademaster",
     val skills: List<Skill> = listOf(),
-    val selectedSkills: List<Skill> = listOf(),
+    val selectedSkillsBlade: List<Skill> = listOf(),
+    val selectedSkillsGunner: List<Skill> = listOf(),
 
     val villageRankExpanded: Boolean = false,
     val hunterRankExpanded: Boolean = false,
@@ -20,7 +21,7 @@ data class SearchState(
 
     val skillsSelectionIsOpen: Boolean = false,
     val skillsSearchQuery: String = "",
-    val skillsFiltered: List<Skill> = skills,
+    val skillsFiltered: List<Skill> = listOf(),
 
     val isSearching: Boolean = false,
     val searchFinished: Boolean = false,
