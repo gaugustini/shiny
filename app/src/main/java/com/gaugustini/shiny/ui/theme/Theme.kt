@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.theme
+package com.gaugustini.shiny.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme

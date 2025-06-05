@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.result
+package com.gaugustini.shiny.ui.screen.result
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
@@ -46,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gaugustini.shiny.R
 import com.gaugustini.shiny.domain.model.Result
-import com.gaugustini.shiny.presentation.theme.ShinyTheme
+import com.gaugustini.shiny.ui.theme.ShinyTheme
 
 @Composable
 fun ResultScreen(

@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.result
+package com.gaugustini.shiny.ui.screen.result
 
 import com.gaugustini.shiny.domain.model.Result
 

@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.search
+package com.gaugustini.shiny.ui.screen.search
 
 import com.gaugustini.shiny.domain.model.Skill
 

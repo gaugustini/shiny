@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.search
+package com.gaugustini.shiny.ui.screen.search
 
 import android.content.res.Configuration
 import androidx.activity.compose.BackHandler
@@ -64,7 +64,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gaugustini.shiny.R
-import com.gaugustini.shiny.presentation.theme.ShinyTheme
+import com.gaugustini.shiny.ui.theme.ShinyTheme
 
 @Composable
 fun SearchScreen(

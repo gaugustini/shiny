@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.result
+package com.gaugustini.shiny.ui.screen.result
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

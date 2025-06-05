@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation
+package com.gaugustini.shiny.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -8,12 +8,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.gaugustini.shiny.presentation.result.ResultScreen
-import com.gaugustini.shiny.presentation.search.SearchScreen
-import com.gaugustini.shiny.presentation.theme.ShinyTheme
+import com.gaugustini.shiny.ui.screen.result.ResultScreen
+import com.gaugustini.shiny.ui.screen.search.SearchScreen
+import com.gaugustini.shiny.ui.theme.ShinyTheme
 
 @Composable
-fun ShinyApp() {
+fun AppNavigation() {
     ShinyTheme {
         Surface(
             modifier = Modifier.fillMaxSize(),

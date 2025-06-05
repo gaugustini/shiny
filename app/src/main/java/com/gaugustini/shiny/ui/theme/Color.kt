@@ -1,4 +1,4 @@
-package com.gaugustini.shiny.presentation.theme
+package com.gaugustini.shiny.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
