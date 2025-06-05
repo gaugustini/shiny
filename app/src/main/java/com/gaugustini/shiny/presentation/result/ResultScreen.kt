@@ -53,7 +53,7 @@ fun ResultScreen(
     viewModel: ResultViewModel = hiltViewModel(),
     onBackClick: () -> Unit = {}
 ) {
-    val uiState by viewModel.resultState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     ResultScreenContent(
         uiState,

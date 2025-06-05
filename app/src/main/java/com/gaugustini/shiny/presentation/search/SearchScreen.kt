@@ -71,7 +71,7 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     toResultScreen: () -> Unit = {}
 ) {
-    val uiState by viewModel.searchState.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
 
     when {
         uiState.searchFinished -> {
@@ -347,27 +347,21 @@ fun SkillsSelectionContent(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .clickable {
-                                val isSelected = if (uiState.hunterType == "Blademaster") {
-                                    uiState.selectedSkillsBlade.contains(skill)
-                                } else {
-                                    uiState.selectedSkillsGunner.contains(skill)
-                                }
-                                val updatedList = if (isSelected) {
-                                    if (uiState.hunterType == "Blademaster") {
+                                if (uiState.hunterType == "Blademaster") {
+                                    val isSelected = uiState.selectedSkillsBlade.contains(skill)
+                                    val updatedList = if (isSelected) {
                                         uiState.selectedSkillsBlade - skill
                                     } else {
-                                        uiState.selectedSkillsGunner - skill
-                                    }
-                                } else {
-                                    if (uiState.hunterType == "Blademaster") {
                                         uiState.selectedSkillsBlade + skill
+                                    }
+                                    updateState(uiState.copy(selectedSkillsBlade = updatedList))
+                                } else {
+                                    val isSelected = uiState.selectedSkillsGunner.contains(skill)
+                                    val updatedList = if (isSelected) {
+                                        uiState.selectedSkillsGunner - skill
                                     } else {
                                         uiState.selectedSkillsGunner + skill
                                     }
-                                }
-                                if (uiState.hunterType == "Blademaster") {
-                                    updateState(uiState.copy(selectedSkillsBlade = updatedList))
-                                } else {
                                     updateState(uiState.copy(selectedSkillsGunner = updatedList))
                                 }
                             }

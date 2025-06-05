@@ -22,8 +22,8 @@ class SearchViewModel @Inject constructor(
     private val solution: Solution
 ) : ViewModel() {
 
-    private val _searchState = MutableStateFlow(SearchState())
-    val searchState: StateFlow<SearchState> = _searchState.asStateFlow()
+    private val _uiState = MutableStateFlow(SearchState())
+    val uiState: StateFlow<SearchState> = _uiState.asStateFlow()
 
     init {
         loadSkills(1)
@@ -31,45 +31,42 @@ class SearchViewModel @Inject constructor(
 
     private fun loadSkills(hunterType: Int) {
         viewModelScope.launch {
-            val skills = withContext(Dispatchers.IO) {
-                skillRepository.getSkillList(hunterType)
-            }
-            _searchState.update { it.copy(skills = skills, skillsFiltered = skills) }
+            val skills = skillRepository.getSkillList(hunterType)
+            _uiState.update { it.copy(skills = skills, skillsFiltered = skills) }
         }
     }
 
     fun updateState(newState: SearchState) {
-        if (newState.hunterType != _searchState.value.hunterType) {
+        if (newState.hunterType != _uiState.value.hunterType) {
             loadSkills(if (newState.hunterType == "Blademaster") 1 else 2)
         }
 
-        _searchState.value = newState
+        _uiState.value = newState
     }
 
     fun startSearch() {
+        val state = _uiState.value
         val searchOptions = SearchOptions(
             game = 0,
-            hunterRank = _searchState.value.hunterRank.toInt(),
-            villageRank = _searchState.value.villageRank.toInt(),
-            weaponSlot = _searchState.value.weaponSlot.toInt(),
-            gender = if (_searchState.value.gender == "Male") 1 else 2,
-            hunterType = if (_searchState.value.hunterType == "Blademaster") 1 else 2,
-            skills = if (_searchState.value.hunterType == "Blademaster") {
-                _searchState.value.selectedSkillsBlade
+            hunterRank = state.hunterRank.toInt(),
+            villageRank = state.villageRank.toInt(),
+            weaponSlot = state.weaponSlot.toInt(),
+            gender = if (state.gender == "Male") 1 else 2,
+            hunterType = if (state.hunterType == "Blademaster") 1 else 2,
+            skills = if (state.hunterType == "Blademaster") {
+                state.selectedSkillsBlade
             } else {
-                _searchState.value.selectedSkillsGunner
+                state.selectedSkillsGunner
             }
         )
         viewModelScope.launch {
-            _searchState.value = _searchState.value.copy(isSearching = true)
-
-            val searchFinished = withContext(Dispatchers.IO) {
+            _uiState.update { it.copy(isSearching = true) }
+            withContext(Dispatchers.Default) {
                 solution.start(searchOptions)
             }
-            _searchState.value =
-                _searchState.value.copy(isSearching = false, searchFinished = searchFinished)
+            _uiState.update { it.copy(isSearching = false, searchFinished = true) }
             delay(1000) // Need to find a better way to change state after going to Result Screen
-            _searchState.value = _searchState.value.copy(searchFinished = false)
+            _uiState.update { it.copy(searchFinished = false) }
         }
     }
 
