@@ -92,13 +92,12 @@ fun SearchScreen(
                 if (skillsSelectionIsOpen) {
                     SkillsSelectionContent(
                         uiState,
-                        updateState = { viewModel.updateState(it) },
+                        onUiEvent = { viewModel.handleEvent(it) }
                     )
                 } else {
                     SearchScreenContent(
                         uiState,
-                        updateState = { viewModel.updateState(it) },
-                        onSearchClick = { viewModel.startSearch() }
+                        onUiEvent = { viewModel.handleEvent(it) }
                     )
                 }
             }
@@ -110,8 +109,7 @@ fun SearchScreen(
 @Composable
 fun SearchScreenContent(
     uiState: SearchState,
-    updateState: (SearchState) -> Unit = {},
-    onSearchClick: () -> Unit = {}
+    onUiEvent: (SearchUiEvent) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -143,10 +141,8 @@ fun SearchScreenContent(
                 selectedValue = uiState.villageRank,
                 expanded = uiState.villageRankExpanded,
                 options = (1..9).map { it.toString() },
-                onExpandChange = { updateState(uiState.copy(villageRankExpanded = it)) },
-                onValueChange = {
-                    updateState(uiState.copy(villageRank = it, villageRankExpanded = false))
-                }
+                onExpandChange = { onUiEvent(SearchUiEvent.VillageRankExpanded(it)) },
+                onValueChange = { onUiEvent(SearchUiEvent.VillageRankChanged(it)) }
             )
 
             ExpandableCard(
@@ -154,10 +150,8 @@ fun SearchScreenContent(
                 selectedValue = uiState.hunterRank,
                 expanded = uiState.hunterRankExpanded,
                 options = (1..9).map { it.toString() },
-                onExpandChange = { updateState(uiState.copy(hunterRankExpanded = it)) },
-                onValueChange = {
-                    updateState(uiState.copy(hunterRank = it, hunterRankExpanded = false))
-                }
+                onExpandChange = { onUiEvent(SearchUiEvent.HunterRankExpanded(it)) },
+                onValueChange = { onUiEvent(SearchUiEvent.HunterRankChanged(it)) }
             )
 
             ExpandableCard(
@@ -165,10 +159,8 @@ fun SearchScreenContent(
                 selectedValue = uiState.gender,
                 expanded = uiState.genderExpanded,
                 options = listOf(stringResource(R.string.male), stringResource(R.string.female)),
-                onExpandChange = { updateState(uiState.copy(genderExpanded = it)) },
-                onValueChange = {
-                    updateState(uiState.copy(gender = it, genderExpanded = false))
-                }
+                onExpandChange = { onUiEvent(SearchUiEvent.GenderExpanded(it)) },
+                onValueChange = { onUiEvent(SearchUiEvent.GenderChanged(it)) }
             )
 
             ExpandableCard(
@@ -176,10 +168,8 @@ fun SearchScreenContent(
                 selectedValue = uiState.weaponSlot,
                 expanded = uiState.weaponSlotExpanded,
                 options = (0..3).map { it.toString() },
-                onExpandChange = { updateState(uiState.copy(weaponSlotExpanded = it)) },
-                onValueChange = {
-                    updateState(uiState.copy(weaponSlot = it, weaponSlotExpanded = false))
-                }
+                onExpandChange = { onUiEvent(SearchUiEvent.WeaponSlotExpanded(it)) },
+                onValueChange = { onUiEvent(SearchUiEvent.WeaponSlotChanged(it)) }
             )
 
             ExpandableCard(
@@ -190,10 +180,8 @@ fun SearchScreenContent(
                     stringResource(R.string.blademaster),
                     stringResource(R.string.gunner)
                 ),
-                onExpandChange = { updateState(uiState.copy(hunterTypeExpanded = it)) },
-                onValueChange = {
-                    updateState(uiState.copy(hunterType = it, hunterTypeExpanded = false))
-                }
+                onExpandChange = { onUiEvent(SearchUiEvent.HunterTypeExpanded(it)) },
+                onValueChange = { onUiEvent(SearchUiEvent.HunterTypeChanged(it)) }
             )
 
             SkillCard(
@@ -204,11 +192,11 @@ fun SearchScreenContent(
                 } else {
                     uiState.selectedSkillsGunner.map { it.name }
                 },
-                onClick = { updateState(uiState.copy(skillsSelectionIsOpen = true)) }
+                onClick = { onUiEvent(SearchUiEvent.OpenSkillSelection) }
             )
 
             Button(
-                onClick = { onSearchClick() },
+                onClick = { onUiEvent(SearchUiEvent.SearchClicked) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 96.dp)
@@ -226,22 +214,12 @@ fun SearchScreenContent(
 @Composable
 fun SkillsSelectionContent(
     uiState: SearchState,
-    updateState: (SearchState) -> Unit = {}
+    onUiEvent: (SearchUiEvent) -> Unit = {}
 ) {
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val focusManager = LocalFocusManager.current
-    val clearStateSkillsSelection = uiState.copy(
-        skillsSelectionIsOpen = false,
-        skillsSearchQuery = "",
-        skillsFiltered = uiState.skills,
-        selectedSkillsExpanded = if (uiState.hunterType == "Blademaster") {
-            uiState.selectedSkillsBlade.isNotEmpty()
-        } else {
-            uiState.selectedSkillsGunner.isNotEmpty()
-        }
-    )
 
-    BackHandler { updateState(clearStateSkillsSelection) }
+    BackHandler { onUiEvent(SearchUiEvent.CloseSkillSelection) }
 
     Scaffold(
         modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -256,7 +234,7 @@ fun SkillsSelectionContent(
                 },
                 navigationIcon = {
                     IconButton(
-                        onClick = { updateState(clearStateSkillsSelection) }
+                        onClick = { onUiEvent(SearchUiEvent.CloseSkillSelection) }
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
@@ -270,7 +248,7 @@ fun SkillsSelectionContent(
         },
         floatingActionButton = {
             Button(
-                onClick = { updateState(clearStateSkillsSelection) },
+                onClick = { onUiEvent(SearchUiEvent.CloseSkillSelection) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 40.dp, end = 40.dp)
@@ -291,16 +269,7 @@ fun SkillsSelectionContent(
             OutlinedTextField(
                 placeholder = { Text(stringResource(R.string.search)) },
                 value = uiState.skillsSearchQuery,
-                onValueChange = { value ->
-                    updateState(
-                        uiState.copy(
-                            skillsSearchQuery = value,
-                            skillsFiltered = uiState.skills.filter {
-                                it.name.lowercase().contains(value.lowercase())
-                            }
-                        )
-                    )
-                },
+                onValueChange = { onUiEvent(SearchUiEvent.SkillSearchQueryChanged(it)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(
@@ -311,12 +280,7 @@ fun SkillsSelectionContent(
                 trailingIcon = {
                     if (uiState.skillsSearchQuery.isNotEmpty()) {
                         IconButton(onClick = {
-                            updateState(
-                                uiState.copy(
-                                    skillsSearchQuery = "",
-                                    skillsFiltered = uiState.skills
-                                )
-                            )
+                            onUiEvent(SearchUiEvent.ClearSkillSearchQuery)
                             focusManager.clearFocus()
                         }) {
                             Icon(
@@ -340,25 +304,7 @@ fun SkillsSelectionContent(
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
-                            .clickable {
-                                if (uiState.hunterType == "Blademaster") {
-                                    val isSelected = uiState.selectedSkillsBlade.contains(skill)
-                                    val updatedList = if (isSelected) {
-                                        uiState.selectedSkillsBlade - skill
-                                    } else {
-                                        uiState.selectedSkillsBlade + skill
-                                    }
-                                    updateState(uiState.copy(selectedSkillsBlade = updatedList))
-                                } else {
-                                    val isSelected = uiState.selectedSkillsGunner.contains(skill)
-                                    val updatedList = if (isSelected) {
-                                        uiState.selectedSkillsGunner - skill
-                                    } else {
-                                        uiState.selectedSkillsGunner + skill
-                                    }
-                                    updateState(uiState.copy(selectedSkillsGunner = updatedList))
-                                }
-                            }
+                            .clickable { onUiEvent(SearchUiEvent.SkillSelectionChanged(skill)) }
                             .fillMaxWidth()
                     ) {
                         Checkbox(
