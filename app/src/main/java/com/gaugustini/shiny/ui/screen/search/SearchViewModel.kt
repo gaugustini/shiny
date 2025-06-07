@@ -95,16 +95,24 @@ class SearchViewModel @Inject constructor(
             is SearchUiEvent.HunterTypeChanged -> {
                 val newType = event.value
                 val needsReload = newType != state.hunterType
-                _uiState.value = state.copy(hunterType = newType, hunterTypeExpanded = false)
+                _uiState.value = state.copy(
+                    hunterType = newType,
+                    hunterTypeExpanded = false,
+                    selectedSkillsExpanded = if (newType == "Blademaster") {
+                        state.selectedSkillsBlade.isNotEmpty()
+                    } else {
+                        state.selectedSkillsGunner.isNotEmpty()
+                    }
+                )
                 if (needsReload) loadSkills(if (newType == "Blademaster") 1 else 2)
             }
 
             is SearchUiEvent.OpenSkillSelection ->
-                _uiState.value = state.copy(skillsSelectionIsOpen = true)
+                _uiState.value = state.copy(skillSelectionIsOpen = true)
 
             is SearchUiEvent.CloseSkillSelection ->
                 _uiState.value = state.copy(
-                    skillsSelectionIsOpen = false,
+                    skillSelectionIsOpen = false,
                     skillsSearchQuery = "",
                     skillsFiltered = state.skills,
                     selectedSkillsExpanded = if (state.hunterType == "Blademaster") {
@@ -129,20 +137,21 @@ class SearchViewModel @Inject constructor(
                 )
 
             is SearchUiEvent.SkillSelectionChanged -> {
+                val skill = event.skill
                 if (state.hunterType == "Blademaster") {
-                    val isSelected = state.selectedSkillsBlade.contains(event.skill)
+                    val isSelected = state.selectedSkillsBlade.contains(skill)
                     val updatedList = if (isSelected) {
-                        state.selectedSkillsBlade - event.skill
+                        state.selectedSkillsBlade - skill
                     } else {
-                        state.selectedSkillsBlade + event.skill
+                        state.selectedSkillsBlade + skill
                     }
                     _uiState.value = state.copy(selectedSkillsBlade = updatedList)
                 } else {
-                    val isSelected = state.selectedSkillsGunner.contains(event.skill)
+                    val isSelected = state.selectedSkillsGunner.contains(skill)
                     val updatedList = if (isSelected) {
-                        state.selectedSkillsGunner - event.skill
+                        state.selectedSkillsGunner - skill
                     } else {
-                        state.selectedSkillsGunner + event.skill
+                        state.selectedSkillsGunner + skill
                     }
                     _uiState.value = state.copy(selectedSkillsGunner = updatedList)
                 }

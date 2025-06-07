@@ -16,10 +16,10 @@ data class SearchState(
     val hunterRankExpanded: Boolean = false,
     val genderExpanded: Boolean = false,
     val weaponSlotExpanded: Boolean = false,
-    val selectedSkillsExpanded: Boolean = false,
     val hunterTypeExpanded: Boolean = false,
+    val selectedSkillsExpanded: Boolean = false,
 
-    val skillsSelectionIsOpen: Boolean = false,
+    val skillSelectionIsOpen: Boolean = false,
     val skillsSearchQuery: String = "",
     val skillsFiltered: List<Skill> = listOf(),
 

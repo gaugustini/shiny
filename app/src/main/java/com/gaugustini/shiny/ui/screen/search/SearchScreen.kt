@@ -5,35 +5,26 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -45,9 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -56,7 +45,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gaugustini.shiny.R
+import com.gaugustini.shiny.ui.screen.search.components.CheckboxWithText
 import com.gaugustini.shiny.ui.screen.search.components.ExpandableCard
+import com.gaugustini.shiny.ui.screen.search.components.InputTextSearch
 import com.gaugustini.shiny.ui.screen.search.components.SkillCard
 import com.gaugustini.shiny.ui.theme.ShinyTheme
 
@@ -78,7 +69,7 @@ fun SearchScreen(
 
         else -> {
             AnimatedContent(
-                targetState = uiState.skillsSelectionIsOpen,
+                targetState = uiState.skillSelectionIsOpen,
                 transitionSpec = {
                     if (targetState) {
                         slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Left) togetherWith
@@ -88,9 +79,9 @@ fun SearchScreen(
                                 slideOutOfContainer(AnimatedContentTransitionScope.SlideDirection.Right)
                     }
                 }
-            ) { skillsSelectionIsOpen ->
-                if (skillsSelectionIsOpen) {
-                    SkillsSelectionContent(
+            ) { openSkillSelection ->
+                if (openSkillSelection) {
+                    SkillSelectionContent(
                         uiState,
                         onUiEvent = { viewModel.handleEvent(it) }
                     )
@@ -124,7 +115,11 @@ fun SearchScreenContent(
                         overflow = TextOverflow.Ellipsis
                     )
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
+                )
             )
         }
     ) { innerPadding ->
@@ -212,12 +207,11 @@ fun SearchScreenContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SkillsSelectionContent(
+fun SkillSelectionContent(
     uiState: SearchState,
     onUiEvent: (SearchUiEvent) -> Unit = {}
 ) {
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
-    val focusManager = LocalFocusManager.current
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     BackHandler { onUiEvent(SearchUiEvent.CloseSkillSelection) }
 
@@ -243,7 +237,11 @@ fun SkillsSelectionContent(
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.background,
+                    scrolledContainerColor = MaterialTheme.colorScheme.background
+                )
             )
         },
         floatingActionButton = {
@@ -266,33 +264,10 @@ fun SkillsSelectionContent(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            OutlinedTextField(
-                placeholder = { Text(stringResource(R.string.search)) },
-                value = uiState.skillsSearchQuery,
+            InputTextSearch(
+                textInput = uiState.skillsSearchQuery,
                 onValueChange = { onUiEvent(SearchUiEvent.SkillSearchQueryChanged(it)) },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(
-                    onSearch = { focusManager.clearFocus() }
-                ),
-                shape = RoundedCornerShape(16.dp),
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                trailingIcon = {
-                    if (uiState.skillsSearchQuery.isNotEmpty()) {
-                        IconButton(onClick = {
-                            onUiEvent(SearchUiEvent.ClearSkillSearchQuery)
-                            focusManager.clearFocus()
-                        }) {
-                            Icon(
-                                Icons.Filled.Clear,
-                                contentDescription = stringResource(R.string.clear_text)
-                            )
-                        }
-                    }
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 32.dp, end = 32.dp, top = 16.dp, bottom = 16.dp)
+                onClearInput = { onUiEvent(SearchUiEvent.ClearSkillSearchQuery) }
             )
 
             LazyColumn(
@@ -301,26 +276,15 @@ fun SkillsSelectionContent(
                 modifier = Modifier.weight(1f)
             ) {
                 items(uiState.skillsFiltered) { skill ->
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .clickable { onUiEvent(SearchUiEvent.SkillSelectionChanged(skill)) }
-                            .fillMaxWidth()
-                    ) {
-                        Checkbox(
-                            checked = if (uiState.hunterType == "Blademaster") {
-                                uiState.selectedSkillsBlade.contains(skill)
-                            } else {
-                                uiState.selectedSkillsGunner.contains(skill)
-                            },
-                            onCheckedChange = null,
-                            modifier = Modifier.padding(16.dp)
-                        )
-                        Text(
-                            text = skill.name,
-                            fontSize = 18.sp
-                        )
-                    }
+                    CheckboxWithText(
+                        text = skill.name,
+                        checked = if (uiState.hunterType == "Blademaster") {
+                            uiState.selectedSkillsBlade.contains(skill)
+                        } else {
+                            uiState.selectedSkillsGunner.contains(skill)
+                        },
+                        onCheckedChange = { onUiEvent(SearchUiEvent.SkillSelectionChanged(skill)) }
+                    )
                 }
             }
         }
@@ -364,7 +328,7 @@ private fun SkillsSelectionContentPreview(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            SkillsSelectionContent(state)
+            SkillSelectionContent(state)
         }
     }
 }
